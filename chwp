@@ -1,0 +1,26 @@
+#!/bin/bash
+INP="$RANDOM" #Random wallpaper number
+FLAG="false" #Flag is used so that Liked it? is asked only once-> During the call when a wallpaper is found.
+content=$(wget https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-$INP.jpg -q -O -)
+if [ -z "$content" ] #Recursive call if image not found.
+then
+        echo "Error"
+	chwp
+else
+	curl https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-$INP.jpg > /home/sankalp/new
+	gsettings set org.gnome.desktop.background picture-uri file:///home/sankalp/new
+FLAG="true"
+
+fi
+if [ "$FLAG" == "true" ]
+then
+	echo "Liked it?"
+	read RESPONSE
+	if [ "$RESPONSE" == "y" ]
+	then
+		mv /home/sankalp/new /home/sankalp/Wallpapers/$INP
+		gsettings set org.gnome.desktop.background picture-uri file:///home/sankalp/Wallpapers/$INP
+	else
+		rm /home/sankalp/new
+	fi
+fi
