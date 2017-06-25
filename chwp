@@ -9,7 +9,7 @@ then
         do
                 echo "Downloading new wallpaper...."
                 INP="$RANDOM" #Random wallpaper number
-                FLAG="false" #Flag is used so that Liked it? is asked only once-> During the call when a wallpaper is found.
+                FLAG="false" #Flag is used for input validation. During the call when a wallpaper is found.
                 content=$(wget https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-$INP.jpg -q -O -)
                 if [ -z "$content" ] #Recursive call if image not found.
                 then
