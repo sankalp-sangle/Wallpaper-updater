@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Enter 1 for new wallpaper, 2 for an existing wallpaper."
+echo "Enter 1 for new wallpaper, 2 for an existing wallpaper from Wallpapers directory."
 currentp="$(gsettings get org.gnome.desktop.background picture-uri)" #Get path to current wallpaper
 read choice
 if [ "$choice" == "1" ] #new wallpaper desired
@@ -29,6 +29,7 @@ then
                         then
                                 mv ./img ./Wallpapers/$INP
                                 gsettings set org.gnome.desktop.background picture-uri file://$(pwd)/Wallpapers/$INP
+				currentp="$(gsettings get org.gnome.desktop.background picture-uri)" #Update current path of wallpaper
                         elif [ "$RESPONSE" == "2" ] #Save but revert to previous
                         then
                                 mv ./img ./Wallpapers/$INP
@@ -47,6 +48,8 @@ then
         randomfile="$(ls ./Wallpapers | shuf --head-count=1)"
         gsettings set org.gnome.desktop.background picture-uri file://$(pwd)/Wallpapers/$randomfile
         satisfied="n"
+	echo "Satisfied? y or n"
+	read satisfied
         while [ "$satisfied" == "n" ]
         do
                 echo "Enter 1 for original wallpaper, 2 for another"
