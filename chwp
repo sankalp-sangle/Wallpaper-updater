@@ -1,26 +1,65 @@
 #!/bin/bash
-INP="$RANDOM" #Random wallpaper number
-FLAG="false" #Flag is used so that Liked it? is asked only once-> During the call when a wallpaper is found.
-content=$(wget https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-$INP.jpg -q -O -)
-if [ -z "$content" ] #Recursive call if image not found.
+echo "Enter 1 for new wallpaper, 2 for an existing wallpaper."
+currentp="$(gsettings get org.gnome.desktop.background picture-uri)" #Get path to current wallpaper
+read choice
+if [ "$choice" == "1" ] #new wallpaper desired
 then
-        echo "Error"
-	chwp
-else
-	curl https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-$INP.jpg > /home/sankalp/new
-	gsettings set org.gnome.desktop.background picture-uri file:///home/sankalp/new
-FLAG="true"
+        satisfied="n"
+        while [ "$satisfied" == "n" ]
+        do
+                echo "Downloading new wallpaper...."
+                INP="$RANDOM" #Random wallpaper number
+                FLAG="false" #Flag is used so that Liked it? is asked only once-> During the call when a wallpaper is found.
+                content=$(wget https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-$INP.jpg -q -O -)
+                if [ -z "$content" ] #Recursive call if image not found.
+                then
+                        echo "Error"
+                        chwp
+                else
+                        curl https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-$INP.jpg > ./img
+                        gsettings set org.gnome.desktop.background picture-uri file://$(pwd)/img
+                FLAG="true"
 
-fi
-if [ "$FLAG" == "true" ]
+                fi
+                        if [ "$FLAG" == "true" ]
+                        then
+                                echo "Enter 1 for save and keep wallpaper, 2 for save and revert to previous wallpaper, 3 for don't save"
+                                read RESPONSE
+                        if [ "$RESPONSE" == "1" ] #Save and keep
+                        then
+                                mv ./img ./Wallpapers/$INP
+                                gsettings set org.gnome.desktop.background picture-uri file://$(pwd)/Wallpapers/$INP
+                        elif [ "$RESPONSE" == "2" ] #Save but revert to previous
+                        then
+                                mv ./img ./Wallpapers/$INP
+                                gsettings set org.gnome.desktop.background picture-uri $currentp
+                        elif [ "$RESPONSE" == "3" ] #Don't save and revert to previous
+                        then
+                                rm ./img
+                                gsettings set org.gnome.desktop.background picture-uri $currentp
+                        fi
+                fi
+                echo "Satisfied? y or n"
+                read satisfied
+        done
+elif [ "$choice" == "2" ]
 then
-	echo "Liked it?"
-	read RESPONSE
-	if [ "$RESPONSE" == "y" ]
-	then
-		mv /home/sankalp/new /home/sankalp/Wallpapers/$INP
-		gsettings set org.gnome.desktop.background picture-uri file:///home/sankalp/Wallpapers/$INP
-	else
-		rm /home/sankalp/new
-	fi
+        randomfile="$(ls ./Wallpapers | shuf --head-count=1)"
+        gsettings set org.gnome.desktop.background picture-uri file://$(pwd)/Wallpapers/$randomfile
+        satisfied="n"
+        while [ "$satisfied" == "n" ]
+        do
+                echo "Enter 1 for original wallpaper, 2 for another"
+                read otherchoice
+                if [ "$otherchoice" == "1" ]
+                then
+                        gsettings set org.gnome.desktop.background picture-uri $currentp
+                elif [ "$otherchoice" == "2" ]
+                then
+                        randomfile="$(ls ./Wallpapers | shuf --head-count=1)"
+                        gsettings set org.gnome.desktop.background picture-uri file://$(pwd)/Wallpapers/$randomfile
+                fi
+                echo "Satisfied? y or n"
+                read satisfied
+        done
 fi
