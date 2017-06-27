@@ -14,7 +14,7 @@ then
                 if [ -z "$content" ] #Recursive call if image not found.
                 then
                         echo "Error"
-                        chwp
+                        ./chwp
                 else
                         curl https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-$INP.jpg > ./img
                         gsettings set org.gnome.desktop.background picture-uri file://$(pwd)/img
