@@ -15,4 +15,8 @@ $ ./chwp
 
 **NOTE**: Do not tamper with file structure of cloned repository. 
 Execute script only when in Wallpaper-updater directory.
+Here are a few sample runs:
+![Sample gif](https://github.com/sankalp-sangle/Wallpaper-updater/blob/master/out.gif)
+
+![Sample gif 2](https://github.com/sankalp-sangle/Wallpaper-updater/blob/master/out-2.gif)
 Enjoy!
